@@ -1,0 +1,30 @@
+{
+  "name": "practica-tasks-acevedo-cristian",
+  "version": "1.0.0",
+  "description": "Práctica CRUD de Tareas y Usuarios con Backend usando Sequelize",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mysql",
+    "sequelize",
+    "crud"
+  ],
+  "author": "Cristian Acevedo",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.22.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.2",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
