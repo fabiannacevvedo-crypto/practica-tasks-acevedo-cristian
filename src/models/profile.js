@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import { User } from "./User.js";
+import User from "./User.js";
 
 const Profile = sequelize.define("Profile", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -12,4 +12,4 @@ const Profile = sequelize.define("Profile", {
 User.hasOne(Profile, { foreignKey: "userId", onDelete: "CASCADE" });
 Profile.belongsTo(User, { foreignKey: "userId" });
 
-export { Profile };
+export default Profile;
