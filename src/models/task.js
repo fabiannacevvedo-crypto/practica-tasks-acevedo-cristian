@@ -1,9 +1,15 @@
+// src/models/task.js
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/database.js";
+import sequelize from "../config/database.js";
 
-export const Task = sequelize.define("Task", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+const Task = sequelize.define("Task", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING(100), allowNull: false, unique: true },
   description: { type: DataTypes.STRING(100), allowNull: false },
   isComplete: { type: DataTypes.BOOLEAN, defaultValue: false }
-}, { timestamps: false });
+});
+
+// Relación: cada tarea pertenece a un usuario
+Task.belongsTo(User, { foreignKey: "userId" });
+
+export default Task;
