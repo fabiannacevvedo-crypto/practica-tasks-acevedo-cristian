@@ -1,32 +1,46 @@
 import { Task } from "../models/Task.js";
+import { User } from "../models/User.js"; // importa el modelo User
 
+// Crear tarea vinculada a un usuario con validaciones
 export const createTask = async (req, res) => {
   try {
-    const { title, description, isComplete } = req.body;
-    if (!title || !description) return res.status(400).json({ msg: "Datos incompletos" });
+    const { title, description, isComplete, userId } = req.body;
 
+    // Validaciones básicas
+    if (!title || !description || !userId) {
+      return res.status(400).json({ msg: "Datos incompletos" });
+    }
+
+    // Verificar si ya existe una tarea con el mismo título
     const exists = await Task.findOne({ where: { title } });
     if (exists) return res.status(400).json({ msg: "Título ya registrado" });
 
-    const task = await Task.create({ title, description, isComplete });
-    res.status(201).json(task);
+    // Verificar si el usuario existe
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+
+    // Crear la tarea vinculada al usuario
+    const task = await Task.create({ title, description, isComplete, userId });
+    res.status(201).json({ msg: "Tarea creada", task });
   } catch (err) {
     res.status(500).json({ msg: "Error al crear tarea", error: err.message });
   }
 };
 
+// Obtener todas las tareas con su usuario
 export const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await Task.findAll({ include: User });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ msg: "Error al obtener tareas" });
   }
 };
 
+// Obtener tarea por ID con su usuario
 export const getTaskById = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findByPk(req.params.id, { include: User });
     if (!task) return res.status(404).json({ msg: "Tarea no encontrada" });
     res.json(task);
   } catch (err) {
@@ -34,6 +48,7 @@ export const getTaskById = async (req, res) => {
   }
 };
 
+// Actualizar tarea
 export const updateTask = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
@@ -46,6 +61,7 @@ export const updateTask = async (req, res) => {
   }
 };
 
+// Eliminar tarea
 export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);

@@ -1,9 +1,13 @@
 import { User } from "../models/User.js";
+import { Task } from "../models/Task.js"; // importa Task para incluirlo
 
+// Crear usuario
 export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    if (!name || !email || !password) return res.status(400).json({ msg: "Datos incompletos" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ msg: "Datos incompletos" });
+    }
 
     const exists = await User.findOne({ where: { email } });
     if (exists) return res.status(400).json({ msg: "Email ya registrado" });
@@ -15,25 +19,31 @@ export const createUser = async (req, res) => {
   }
 };
 
+// Obtener todos los usuarios con sus tareas
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({ include: Task });
     res.json(users);
   } catch (err) {
     res.status(500).json({ msg: "Error al obtener usuarios" });
   }
 };
 
+// Obtener usuario por ID con sus tareas
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const { id } = req.params;
+    const user = await User.findByPk(id, { include: Task });
+
     if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ msg: "Error al obtener usuario" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ msg: "Error al obtener usuario", error });
   }
 };
 
+// Actualizar usuario
 export const updateUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
@@ -46,6 +56,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// Eliminar usuario
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
