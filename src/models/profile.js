@@ -1,30 +1,26 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
-export const Task = sequelize.define(
-  "Task",
+export const Profile = sequelize.define(
+  "Profile",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    title: {
+    address: {
       type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true
-    },
-    description: {
-      type: DataTypes.STRING(255),
       allowNull: false
     },
-    isComplete: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    phone: {
+      type: DataTypes.STRING(20),
+      allowNull: false
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
   },
   {
@@ -32,5 +28,5 @@ export const Task = sequelize.define(
   }
 );
 
-export default Task;
+export default Profile;
 

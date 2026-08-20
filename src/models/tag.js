@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
-export const User = sequelize.define(
-  "User",
+export const Tag = sequelize.define(
+  "Tag",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -10,17 +10,9 @@ export const User = sequelize.define(
       autoIncrement: true
     },
     name: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true
-    },
-    password: {
-      type: DataTypes.STRING(100),
-      allowNull: false
     }
   },
   {
@@ -28,5 +20,5 @@ export const User = sequelize.define(
   }
 );
 
-export default User;
+export default Tag;
 
