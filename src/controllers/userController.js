@@ -1,70 +1,140 @@
-import { User } from "../models/User.js";
-import { Task } from "../models/Task.js"; // importa Task para incluirlo
+﻿import { matchedData } from "express-validator";
+import { User, Task, Profile } from "../models/index.js";
 
-// Crear usuario
+// Crear un nuevo usuario
 export const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ msg: "Datos incompletos" });
-    }
+    const validatedData = matchedData(req);
+    const user = await User.create(validatedData);
+    
+    // Retornamos los datos del usuario sin exponer la contraseña
+    const responseUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
 
-    const exists = await User.findOne({ where: { email } });
-    if (exists) return res.status(400).json({ msg: "Email ya registrado" });
-
-    const user = await User.create({ name, email, password });
-    res.status(201).json(user);
+    res.status(201).json({
+      msg: "Usuario creado exitosamente",
+      user: responseUser
+    });
   } catch (err) {
-    res.status(500).json({ msg: "Error al crear usuario", error: err.message });
+    res.status(500).json({
+      msg: "Error al crear usuario",
+      error: err.message
+    });
   }
 };
 
-// Obtener todos los usuarios con sus tareas
+// Obtener todos los usuarios con sus tareas y perfil (eager loading sin password)
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll({ include: Task });
-    res.json(users);
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Task,
+          as: "tasks",
+          attributes: ["id", "title", "description", "isComplete"]
+        },
+        {
+          model: Profile,
+          as: "profile",
+          attributes: ["id", "address", "phone"]
+        }
+      ]
+    });
+    res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ msg: "Error al obtener usuarios" });
+    res.status(500).json({
+      msg: "Error al obtener usuarios",
+      error: err.message
+    });
   }
 };
 
-// Obtener usuario por ID con sus tareas
+// Obtener un usuario especifico por ID con sus tareas y perfil
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findByPk(id, { include: Task });
+    const user = await User.findByPk(id, {
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Task,
+          as: "tasks",
+          attributes: ["id", "title", "description", "isComplete"]
+        },
+        {
+          model: Profile,
+          as: "profile",
+          attributes: ["id", "address", "phone"]
+        }
+      ]
+    });
 
-    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
 
     res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ msg: "Error al obtener usuario", error });
+  } catch (err) {
+    res.status(500).json({
+      msg: "Error al obtener usuario",
+      error: err.message
+    });
   }
 };
 
 // Actualizar usuario
 export const updateUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+    const { id } = req.params;
+    const user = await User.findByPk(id);
 
-    await user.update(req.body);
-    res.json({ msg: "Usuario actualizado", user });
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    const validatedData = matchedData(req);
+    await user.update(validatedData);
+
+    const updatedUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
+
+    res.status(200).json({
+      msg: "Usuario actualizado exitosamente",
+      user: updatedUser
+    });
   } catch (err) {
-    res.status(500).json({ msg: "Error al actualizar usuario" });
+    res.status(500).json({
+      msg: "Error al actualizar usuario",
+      error: err.message
+    });
   }
 };
 
 // Eliminar usuario
 export const deleteUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
 
     await user.destroy();
-    res.json({ msg: "Usuario eliminado" });
+    res.status(200).json({
+      msg: "Usuario eliminado exitosamente"
+    });
   } catch (err) {
-    res.status(500).json({ msg: "Error al eliminar usuario" });
+    res.status(500).json({
+      msg: "Error al eliminar usuario",
+      error: err.message
+    });
   }
 };
