@@ -1,6 +1,6 @@
 ﻿import express from "express";
 import dotenv from "dotenv";
-import { sequelize } from "./src/models/index.js";
+import { sequelize } from "./src/config/database.js"
 import userRoutes from "./src/routes/userRoutes.js";
 import taskRoutes from "./src/routes/taskRoutes.js";
 import profileRoutes from "./src/routes/profileRoutes.js";
@@ -29,7 +29,7 @@ app.use((req, res) => {
 
 // Sincronizacion de la base de datos y arranque del servidor
 sequelize
-  .sync()
+  .sync({force: true})
   .then(() => {
     console.log("Base de datos sincronizada correctamente");
     app.listen(PORT, () => {

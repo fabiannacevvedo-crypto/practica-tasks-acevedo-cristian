@@ -35,7 +35,7 @@ export const getUsers = async (req, res) => {
         {
           model: Task,
           as: "tasks",
-          attributes: ["id", "title", "description", "isComplete"]
+          attributes: ["id", "title", "description", "is_Complete"]
         },
         {
           model: Profile,
@@ -63,7 +63,7 @@ export const getUserById = async (req, res) => {
         {
           model: Task,
           as: "tasks",
-          attributes: ["id", "title", "description", "isComplete"]
+          attributes: ["id", "title", "description", "is_Complete"]
         },
         {
           model: Profile,

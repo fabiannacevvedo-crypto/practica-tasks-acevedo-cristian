@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/database.js";
+import {sequelize} from "../config/database.js";
 
 export const Task = sequelize.define(
   "Task",
@@ -18,7 +18,7 @@ export const Task = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    isComplete: {
+    is_Complete: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
