@@ -1,4 +1,4 @@
-﻿import { body, param } from "express-validator";
+import { body, param } from "express-validator";
 import { Tag } from "../models/index.js";
 
 export const createTagValidation = [
@@ -22,6 +22,7 @@ export const updateTagValidation = [
     .isInt()
     .withMessage("El ID de etiqueta debe ser un numero entero"),
   body("name")
+    .optional()
     .trim()
     .notEmpty()
     .withMessage("El nombre de la etiqueta no puede estar vacio")

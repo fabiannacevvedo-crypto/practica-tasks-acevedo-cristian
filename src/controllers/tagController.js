@@ -1,10 +1,10 @@
-﻿import { matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import { Tag, Task } from "../models/index.js";
 
 // Crear una nueva etiqueta
 export const createTag = async (req, res) => {
   try {
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     const tag = await Tag.create(validatedData);
 
     res.status(201).json({
@@ -79,7 +79,7 @@ export const updateTag = async (req, res) => {
       return res.status(404).json({ msg: "Etiqueta no encontrada" });
     }
 
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     await tag.update(validatedData);
 
     res.status(200).json({
@@ -94,7 +94,7 @@ export const updateTag = async (req, res) => {
   }
 };
 
-// Eliminar etiqueta
+// Eliminar etiqueta (eliminacion logica mediante paranoid)
 export const deleteTag = async (req, res) => {
   try {
     const { id } = req.params;

@@ -16,9 +16,9 @@ export const Tag = sequelize.define(
     }
   },
   {
-    timestamps: false
+    timestamps: true,
+    paranoid: true
   }
 );
 
 export default Tag;
-

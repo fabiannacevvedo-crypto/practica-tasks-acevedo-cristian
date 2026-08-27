@@ -1,10 +1,10 @@
-﻿import { matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import { Profile, User } from "../models/index.js";
 
 // Crear perfil vinculado a un usuario (Relacion 1:1)
 export const createProfile = async (req, res) => {
   try {
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     const profile = await Profile.create(validatedData);
 
     const createdProfile = await Profile.findByPk(profile.id, {
@@ -87,7 +87,7 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ msg: "Perfil no encontrado" });
     }
 
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     await profile.update(validatedData);
 
     const updatedProfile = await Profile.findByPk(profile.id, {
@@ -112,7 +112,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Eliminar perfil
+// Eliminar perfil (eliminacion logica mediante paranoid)
 export const deleteProfile = async (req, res) => {
   try {
     const { id } = req.params;

@@ -24,9 +24,9 @@ export const Profile = sequelize.define(
     }
   },
   {
-    timestamps: false
+    timestamps: true,
+    paranoid: true
   }
 );
 
 export default Profile;
-

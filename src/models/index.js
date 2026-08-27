@@ -1,4 +1,4 @@
-﻿import sequelize from "../config/database.js";
+import { sequelize } from "../config/database.js";
 import User from "./user.js";
 import Task from "./task.js";
 import Profile from "./profile.js";

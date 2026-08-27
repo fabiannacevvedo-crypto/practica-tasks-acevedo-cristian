@@ -1,12 +1,12 @@
-﻿import { matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import { User, Task, Profile } from "../models/index.js";
 
 // Crear un nuevo usuario
 export const createUser = async (req, res) => {
   try {
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     const user = await User.create(validatedData);
-    
+
     // Retornamos los datos del usuario sin exponer la contraseña
     const responseUser = {
       id: user.id,
@@ -96,7 +96,7 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ msg: "Usuario no encontrado" });
     }
 
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     await user.update(validatedData);
 
     const updatedUser = {
@@ -117,7 +117,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// Eliminar usuario
+// Eliminar usuario (eliminacion logica mediante paranoid)
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;

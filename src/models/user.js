@@ -24,9 +24,9 @@ export const User = sequelize.define(
     }
   },
   {
-    timestamps: false
+    timestamps: true,
+    paranoid: true
   }
 );
 
 export default User;
-

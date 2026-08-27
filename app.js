@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import dotenv from "dotenv";
 import { sequelize } from "./src/models/index.js";
 import userRoutes from "./src/routes/userRoutes.js";
