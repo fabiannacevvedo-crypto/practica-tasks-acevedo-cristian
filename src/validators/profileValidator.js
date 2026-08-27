@@ -1,4 +1,4 @@
-﻿import { body, param } from "express-validator";
+import { body, param } from "express-validator";
 import { Profile, User } from "../models/index.js";
 
 export const createProfileValidation = [
@@ -49,7 +49,22 @@ export const updateProfileValidation = [
     .notEmpty()
     .withMessage("El telefono no puede estar vacio")
     .isLength({ min: 6, max: 20 })
-    .withMessage("El telefono debe tener entre 6 y 20 caracteres")
+    .withMessage("El telefono debe tener entre 6 y 20 caracteres"),
+  body("userId")
+    .optional()
+    .isInt()
+    .withMessage("El userId debe ser un numero entero")
+    .custom(async (userId, { req }) => {
+      const user = await User.findByPk(userId);
+      if (!user) {
+        throw new Error("El usuario especificado no existe en la base de datos");
+      }
+      const existingProfile = await Profile.findOne({ where: { userId } });
+      if (existingProfile && existingProfile.id !== parseInt(req.params.id)) {
+        throw new Error("El usuario ya cuenta con un perfil asignado (relacion 1:1)");
+      }
+      return true;
+    })
 ];
 
 export const getByIdProfileValidation = [

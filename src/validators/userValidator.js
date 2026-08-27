@@ -1,4 +1,4 @@
-﻿import { body, param } from "express-validator";
+import { body, param } from "express-validator";
 import { User } from "../models/index.js";
 
 export const createUserValidation = [
