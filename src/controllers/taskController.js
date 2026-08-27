@@ -1,10 +1,10 @@
-﻿import { matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import { Task, User, Tag } from "../models/index.js";
 
 // Crear una nueva tarea vinculada a un usuario
 export const createTask = async (req, res) => {
   try {
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     const { tags, ...taskData } = validatedData;
 
     const task = await Task.create(taskData);
@@ -113,7 +113,7 @@ export const updateTask = async (req, res) => {
       return res.status(404).json({ msg: "Tarea no encontrada" });
     }
 
-    const validatedData = matchedData(req);
+    const validatedData = matchedData(req, { locations: ["body"] });
     const { tags, ...taskData } = validatedData;
 
     await task.update(taskData);
@@ -150,7 +150,7 @@ export const updateTask = async (req, res) => {
   }
 };
 
-// Eliminar una tarea
+// Eliminar una tarea (eliminacion logica mediante paranoid)
 export const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -176,7 +176,7 @@ export const deleteTask = async (req, res) => {
 export const assignTagsToTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tagIds } = matchedData(req);
+    const { tagIds } = matchedData(req, { locations: ["body"] });
 
     const task = await Task.findByPk(id);
     if (!task) {
