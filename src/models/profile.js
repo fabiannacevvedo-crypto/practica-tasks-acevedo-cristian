@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import {sequelize} from "../config/database.js";
+import sequelize from "../config/database.js";
 
 export const Profile = sequelize.define(
   "Profile",
@@ -24,9 +24,9 @@ export const Profile = sequelize.define(
     }
   },
   {
-    timestamps: false
+    timestamps: true,
+    paranoid: true
   }
 );
 
 export default Profile;
-

@@ -1,4 +1,5 @@
-﻿import User from "./user.js";
+import { sequelize } from "../config/database.js";
+import User from "./user.js";
 import Task from "./task.js";
 import Profile from "./profile.js";
 import Tag from "./tag.js";
@@ -56,12 +57,11 @@ Tag.belongsToMany(Task, {
   timestamps: false
 });
 
-export { User, Task, Profile, Tag };
-  
-// export default {
-//   sequelize,
-//   User,
-//   Task,
-//   Profile,
-//   Tag
-// };
+export { sequelize, User, Task, Profile, Tag };
+export default {
+  sequelize,
+  User,
+  Task,
+  Profile,
+  Tag
+};
